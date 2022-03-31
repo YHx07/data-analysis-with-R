@@ -2,6 +2,8 @@
 
 ## Task 1
 
+We start diving into R with https://swirlstats.com
+
 ``` r
 library("swirl")
 swirl()
