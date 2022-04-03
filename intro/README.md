@@ -29,3 +29,29 @@ R Programming course:
     7: Matrices and Data Frames   8: Logic                      9: Functions               
     10: lapply and sapply         11: vapply and tapply         12: Looking at Data         
     13: Simulation                14: Dates and Times           15: Base Graphics 
+
+In this lesson, we will explore some basic building blocks of the R programming language.
+
+- ?func
+- c()
+
+In this lesson, you'll learn how to examine your local workspace in R and begin to explore the relationship between your workspace and the file system of your machine.
+
+- getwd()
+- setwd()
+- ls()
+- dir()
+- args()
+- dir.create() 
+- list.files()
+- file.create()
+-- dir.create(file.path('testdir2', 'testdir3'), recursive = TRUE)
+- file.rename()
+- file.copy()
+- file.exists()
+- file.info()
+- file.path()
+- You can use the $ operator --- e.g., file.info("mytest.R")$mode --- to grab specific items.
+
+In this lesson, you'll learn how to create sequences of numbers in R.
+
