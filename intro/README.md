@@ -93,6 +93,22 @@ Subsetting Vectors. In this lesson, we'll see how to extract elements from a vec
 - names(vect) <- c("foo", "bar", "norf")
 - identical()
 
+Matrices and Data Frames. In this lesson, we'll cover matrices and data frames. Both represent 'rectangular' data types, meaning that they are used to store tabular data, with rows and columns.
 
+- dim()
+- attributes()
+- class()
+- matrix()
+- cbind()
+- data.frame(patients, my_matrix)
+- colnames(my_data) <- cnames
 
+Logic. This lesson is meant to be a short introduction to logical operations in R.
+
+- isTRUE()
+- identical()
+- xor()
+- which()
+- any()
+- all()
 
