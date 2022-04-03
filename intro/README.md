@@ -84,3 +84,15 @@ Missing Values. Missing values play an important role in statistics and data ana
 - Inf - Inf
 
 Subsetting Vectors. In this lesson, we'll see how to extract elements from a vector based on some conditions that we specify.
+
+- x[1:10]
+- x[!is.na(x) & x > 0]
+- x[c(2, 10)]
+- x[c(-2, -10)], x[-c(2, 10)]
+- vect <- c(foo = 11, bar = 2, norf = NA)
+- names(vect) <- c("foo", "bar", "norf")
+- identical()
+
+
+
+
