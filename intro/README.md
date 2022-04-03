@@ -30,12 +30,12 @@ R Programming course:
     10: lapply and sapply         11: vapply and tapply         12: Looking at Data         
     13: Simulation                14: Dates and Times           15: Base Graphics 
 
-In this lesson, we will explore some basic building blocks of the R programming language.
+Basic Building Blocks. In this lesson, we will explore some basic building blocks of the R programming language.
 
 - ?func
 - c()
 
-In this lesson, you'll learn how to examine your local workspace in R and begin to explore the relationship between your workspace and the file system of your machine.
+Workspace and Files. In this lesson, you'll learn how to examine your local workspace in R and begin to explore the relationship between your workspace and the file system of your machine.
 
 - getwd()
 - setwd()
@@ -53,5 +53,34 @@ In this lesson, you'll learn how to examine your local workspace in R and begin 
 - file.path()
 - You can use the $ operator --- e.g., file.info("mytest.R")$mode --- to grab specific items.
 
-In this lesson, you'll learn how to create sequences of numbers in R.
+Sequences of Numbers. In this lesson, you'll learn how to create sequences of numbers in R.
 
+- 1:20
+- seq()
+- seq(along.with = my_seq)
+- seq_along(my_seq)
+- rep() |  times = 10, each = 10
+
+Vectors. The simplest and most common data structure in R is the vector.
+
+- tf <- c(0.5, 55, -10, 6) < 1
+TRUE FALSE  TRUE FALSE
+- paste(my_char, collapse = " ")
+- paste("Hello", "world!", sep = " ")
+- paste(1:3, c("X", "Y", "Z"), sep="")
+- paste(LETTERS, 1:4, sep = "-")
+- c(c(1,2,3), 4)
+
+Missing Values. Missing values play an important role in statistics and data analysis. Often, missing values must not be ignored, but rather they should be carefully studied to see if there's an underlying pattern or cause for their missingness.
+
+- NA
+- c(44, NA, 5, NA) * 3
+- rnorm(1000)
+- sample(c(y, z), 100)
+- is.na()
+- sum(is.na(my_data))
+- NaN = 'not a number'
+- 0 / 0
+- Inf - Inf
+
+Subsetting Vectors. In this lesson, we'll see how to extract elements from a vector based on some conditions that we specify.
