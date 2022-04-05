@@ -112,3 +112,29 @@ Logic. This lesson is meant to be a short introduction to logical operations in 
 - any()
 - all()
 
+9. Functions. Functions are one of the fundamental building blocks of the R language. They are small pieces of reusable code that can be treated like any other R object.
+
+John Chambers, the creator of R once said:
+
+To understand computations in R, two slogans are helpful: 
+
+1. Everything that exists is an object.
+2. Everything that happens is a function call.
+
+- Sys.Date()
+- mean(c(2, 4, 5))
+- If you want to see the source code for any function, just type the function name without any arguments or parentheses.
+- args()
+- evaluate(function(x){x+1}, 6)
+- paste
+- func(arg1, arg2 = TRUE, ...).  
+- paste (..., sep = " ", collapse = NULL). All arguments after an ellipses must have default values
+- "unpack" arguments from an ellipses:
+- - args <- list(...)
+- - alpha <- args[["alpha"]]
+- creating new binary operators: %[whatever]%
+"%p%" <- function(left, right){ # Remember to add arguments!
+  return(paste(left, right))
+}
+'I' %p% 'love' %p% 'R!'
+
