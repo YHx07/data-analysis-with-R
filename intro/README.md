@@ -140,3 +140,29 @@ To understand computations in R, two slogans are helpful:
 
 10. Lapply and sapply. In this lesson, you'll learn how to use lapply() and sapply(), the two most important members of R's *apply family of functions, also known as loop functions.
 
+Split-Apply-Combine strategy:
+
+- lapply(list, func) -- takes a list as input, applies a function to each element of the list, then returns a list of the same length as the original one. Data frame is a list of vectors. The 'l' in 'lapply' stands for 'list'.
+- sapply() -- allows you to automate process by calling lapply(), but then attempting to simplify (hence the 's' in 'sapply') the result for you. In general, if the result is a list where every element is of length one, then sapply() returns a vector. If the result is a list where every element is a vector of the same length (> 1), sapply() returns a matrix. If sapply() can't figure things out, then it just returns a list, no  different from what lapply() would give you.
+- vapply()
+- tapply()
+
+Each of the *apply functions will SPLIT up some data into smaller pieces, APPLY a function to each piece, then COMBINE the results. More details in Hadley Wickham's Journal of Statistical Software paper titled 'The Split-Apply-Combine Strategy for Data Analysis'
+
+- head()
+- dim()
+- viewinfo()
+- class()
+- range()
+- unique()
+
+- as.character(cls_list) -- since every element of the list returned by lapply() is a character vector of length one, cls_list can be simplified to a character vector.
+
+- sum(flags$orange)
+- flag_colors <- flags[, 11:17]
+- sapply(flag_colors, sum)
+- shape_mat <- sapply(flag_shapes, range)
+- lapply(unique_vals, function(elem) elem[2])
+
+
+
