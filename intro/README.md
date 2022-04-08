@@ -138,3 +138,5 @@ To understand computations in R, two slogans are helpful:
 }
 'I' %p% 'love' %p% 'R!'
 
+10. Lapply and sapply. In this lesson, you'll learn how to use lapply() and sapply(), the two most important members of R's *apply family of functions, also known as loop functions.
+
