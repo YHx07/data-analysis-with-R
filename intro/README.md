@@ -203,3 +203,17 @@ Each of the *apply functions will SPLIT up some data into smaller pieces, APPLY 
 - table(plants$Active_Growth_Period)
 - str()
 
+13. Simulation. One of the great advantages of using a statistical programming language like R is its vast collection of tools for simulating random numbers.
+
+- sample()
+- LETTERS
+- flips <- sample(x=c(0, 1), size=100, replace=TRUE, prob=c(0.3, 0.7))
+- rbinom(n=100, size=1, prob=0.7) -- Each probability distribution in R has an r*** function (for "random"), a d*** function (for "density"), a p*** (for "probability"), and q*** (for "quantile").
+- rnorm()
+- rpois()
+- replicate()
+- cm <- colMeans()
+- hist(cm)
+- rexp()
+- rchisq()
+- rgamma()
