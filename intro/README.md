@@ -164,5 +164,12 @@ Each of the *apply functions will SPLIT up some data into smaller pieces, APPLY 
 - shape_mat <- sapply(flag_shapes, range)
 - lapply(unique_vals, function(elem) elem[2])
 
+11. Vapply and tapply. In this lesson, we'll learn how to use vapply() and tapply(), each of which serves a very specific purpose within the Split-Apply-Combine methodology.
 
+- vapply() -- whereas sapply() tries to 'guess' the correct format of the result, vapply() allows you to specify it explicitly. If the result doesn't match the format you specify, vapply() will throw an error, causing the operation to stop. This can prevent significant problems in your code that might be caused by getting unexpected return values from sapply().
+
+- dim()
+- head()
+- str()
+- summary()
 
