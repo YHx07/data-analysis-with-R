@@ -187,5 +187,19 @@ Each of the *apply functions will SPLIT up some data into smaller pieces, APPLY 
         1         2         3         4         5         6 
 0.4193548 0.1764706 0.1142857 0.1346154 0.1538462 0.3000000 
 
+12. Looking at Data.
 
+- ls()
+- read.csv()
+- read.table()
+- dim()
+- nrow()
+- ncol()
+- object.size()
+- names()
+- head()
+- tail()
+- summary()
+- table(plants$Active_Growth_Period)
+- str()
 
