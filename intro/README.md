@@ -173,3 +173,19 @@ Each of the *apply functions will SPLIT up some data into smaller pieces, APPLY 
 - str()
 - summary()
 
+> table(flags$landmass)
+
+ 1  2  3  4  5  6 
+31 17 35 52 39 20 
+
+> table(flags$animate)
+
+  0   1 
+155  39 
+
+- table(flags$landmass)
+        1         2         3         4         5         6 
+0.4193548 0.1764706 0.1142857 0.1346154 0.1538462 0.3000000 
+
+
+
