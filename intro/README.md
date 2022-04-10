@@ -217,3 +217,33 @@ Each of the *apply functions will SPLIT up some data into smaller pieces, APPLY 
 - rexp()
 - rchisq()
 - rgamma()
+
+---
+
+15. dplyr. 
+
+| In this lesson, you'll learn how to manipulate data using dplyr. dplyr is a fast and powerful R
+| package written by Hadley Wickham and Romain Francois that provides a consistent and concise
+| grammar for manipulating tabular data.
+| One unique aspect of dplyr is that the same set of tools allow you to work with tabular data from
+| a variety of sources, including data frames, data tables, databases and multidimensional arrays.
+| In this lesson, we'll focus on data frames, but everything you learn will apply equally to other
+| formats.
+| As you may know, "CRAN is a network of ftp and web servers around the world that store identical,
+| up-to-date, versions of code and documentation for R" (http://cran.rstudio.com/). RStudio
+| maintains one of these so-called 'CRAN mirrors' and they generously make their download logs
+| publicly available (http://cran-logs.rstudio.com/). We'll be working with the log from July 8,
+| 2014, which contains information on roughly 225,000 package downloads.
+
+- read.csv()
+- dim()
+- head()
+- library(dplyr) -- load the package
+- packageVersion("dplyr")
+- rm()
+
+According to the "Introduction to dplyr" vignette written by the package authors, "The dplyr philosophy is to have small functions that each do one thing well." Specifically, dplyr supplies five 'verbs' that cover most fundamental data manipulation tasks: select(), filter(), arrange(), mutate(), and summarize().
+
+- select(cran, r_arch:country)
+- filter()
+- is.na()
