@@ -220,7 +220,7 @@ Each of the *apply functions will SPLIT up some data into smaller pieces, APPLY 
 
 ---
 
-15. dplyr. 
+1: Manipulating Data with dplyr
 
 | In this lesson, you'll learn how to manipulate data using dplyr. dplyr is a fast and powerful R
 | package written by Hadley Wickham and Romain Francois that provides a consistent and concise
@@ -247,3 +247,7 @@ According to the "Introduction to dplyr" vignette written by the package authors
 - select(cran, r_arch:country)
 - filter()
 - is.na()
+- arrange() -- order the ROWS of dataframe so that column is in ascending order
+- mutate() -- to create a new variable based on the value of one or more variables already in a dataset.
+- summarize()
+
