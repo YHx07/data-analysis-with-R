@@ -220,7 +220,7 @@ Each of the *apply functions will SPLIT up some data into smaller pieces, APPLY 
 
 ---
 
-1: Manipulating Data with dplyr
+1. Manipulating Data with dplyr
 
 | In this lesson, you'll learn how to manipulate data using dplyr. dplyr is a fast and powerful R
 | package written by Hadley Wickham and Romain Francois that provides a consistent and concise
@@ -235,19 +235,57 @@ Each of the *apply functions will SPLIT up some data into smaller pieces, APPLY 
 | publicly available (http://cran-logs.rstudio.com/). We'll be working with the log from July 8,
 | 2014, which contains information on roughly 225,000 package downloads.
 
+- tbl_df()
+
 - read.csv()
 - dim()
 - head()
 - library(dplyr) -- load the package
 - packageVersion("dplyr")
 - rm()
+- is.na()
 
 According to the "Introduction to dplyr" vignette written by the package authors, "The dplyr philosophy is to have small functions that each do one thing well." Specifically, dplyr supplies five 'verbs' that cover most fundamental data manipulation tasks: select(), filter(), arrange(), mutate(), and summarize().
 
+Five main data manipulation:
+
 - select(cran, r_arch:country)
 - filter()
-- is.na()
 - arrange() -- order the ROWS of dataframe so that column is in ascending order
 - mutate() -- to create a new variable based on the value of one or more variables already in a dataset.
 - summarize()
+
+2. Grouping and Chaining with dplyr
+
+- group_by()
+
+- by_package <- group_by(cran, package)
+
+| At the top of the output above, you'll see 'Groups: package', which tells us that this tbl has
+| been grouped by the package variable. Everything else looks the same, but now any operation we
+| apply to the grouped data will take place on a per package basis.
+
+- summarize(by_package, mean(size))
+
+| Instead of returning a single value, summarize() now returns the mean size for EACH package in
+| our dataset.
+
+- n() -- the total number of rows.
+- n_distinct() -- the total number of unique rows
+- mean() -- the mean value throw rows
+
+- View()
+
+chaining method:
+
+...
+
+- %>% (magrittr package)
+
+cran %>%
+  select(ip_id, country, package, size) %>%
+  mutate(size_mb = size / 2^20) %>%
+  filter(size_mb <= 0.5) %>%
+  arrange(desc(size_mb))
+  # Your call to arrange() goes here
 
