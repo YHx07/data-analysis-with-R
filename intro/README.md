@@ -289,3 +289,81 @@ cran %>%
   arrange(desc(size_mb))
   # Your call to arrange() goes here
 
+3: Tidying Data with tidyr
+readr, tidyr, dplyr package
+
+The author of tidyr, Hadley Wickham, discusses his philosophy of tidy data in his 'Tidy Data' paper: http://vita.had.co.nz/papers/tidy-data.pdf
+
+| Tidy data is formatted in a standard way that facilitates exploration and analysis and works
+| seamlessly with other tidy data tools. Specifically, tidy data satisfies three conditions:
+| 
+| 1) Each variable forms a column
+| 
+| 2) Each observation forms a row
+| 
+| 3) Each type of observational unit forms a table
+
+| The first problem is when you have column headers that are values, not variable names. I've
+| created a simple dataset called 'students' that demonstrates this scenario. Type students to take
+| a look.
+
+- gather()
+
+> students
+  grade male female
+1     A    5      3
+2     B    4      1
+3     C    8      6
+4     D    4      5
+5     E    5      5
+
+> gather(students, sex, count, -grade)
+   grade    sex count
+1      A   male     5
+2      B   male     4
+3      C   male     8
+4      D   male     4
+5      E   male     5
+6      A female     3
+7      B female     1
+8      C female     6
+9      D female     5
+10     E female     5
+
+It's important to understand what each argument to gather() means. The data argument, students, gives the name of the original dataset. The key and value arguments -- sex and count, respectively -- give the column names for our tidy dataset. The final argument, -grade, says that we want to gather all columns EXCEPT the grade column (since grade is already a proper column variable.)
+
+The second messy data case we'll look at is when multiple variables are stored in one column. Type students2 to see an example of this.
+
+- separate()
+
+| A third symptom of messy data is when variables are stored in both rows and columns. students3
+| provides an example of this. Print students3 to the console.
+
+- spread()
+
+| readr is required for certain data manipulations, such as `parse_number(), which will be used in
+| the next question.  Let's, (re)load the package with library(readr).
+
+| The fourth messy data problem we'll look at occurs when multiple observational units are stored
+| in the same table. students4 presents an example of this. Take a look at the data now.
+
+> students4
+    id  name sex class midterm final
+1  168 Brian   F     1       B     B
+2  168 Brian   F     5       A     C
+3  588 Sally   M     1       A     C
+4  588 Sally   M     3       B     C
+5  710  Jeff   M     2       D     E
+6  710  Jeff   M     4       A     C
+7  731 Roger   F     2       C     A
+8  731 Roger   F     5       B     A
+9  908 Karen   M     3       C     C
+10 908 Karen   M     4       A     A
+
+| Our solution will be to break students4 into two separate tables.
+
+| The fifth and final messy data scenario that we'll address is when a single observational unit is
+| stored in multiple tables. It's the opposite of the fourth problem.
+
+- bind_rows()
+- contains()
