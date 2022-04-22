@@ -1,0 +1,15 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+
+```{r}
+
+library(dbplyr)
+library(dplyr)
+
+costs_df <- read.csv(file = 'data/costs.csv', header = T, sep = ",")
+visits_df  <- read.csv(file = 'data/visits_log.csv', header = T, sep = ",")
+
+```
