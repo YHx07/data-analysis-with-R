@@ -3,13 +3,40 @@ title: "R Notebook"
 output: html_notebook
 ---
 
+```{r}
+install.packages("lubridate") # For dates
+```
+
+
 
 ```{r}
 
 library(dbplyr)
 library(dplyr)
+library(lubridate)
 
+setwd("~/mipt-course/pavlov")
 costs_df <- read.csv(file = 'data/costs.csv', header = T, sep = ",")
 visits_df  <- read.csv(file = 'data/visits_log.csv', header = T, sep = ",")
+orders_df  <- read.csv(file = 'data/orders_log.csv', header = T, sep = ",")
 
+costs_df$dt <- as.Date(strptime(costs_df$dt, "%Y-%m-%d")) 
+visits_df$Start.Ts <- as.Date(strptime(visits_df$Start.Ts, "%d.%m.%Y %H:%M")) 
+visits_df$End.Ts <- as.Date(strptime(visits_df$End.Ts, "%d.%m.%Y %H:%M")) 
+orders_df$Buy.Ts <- as.Date(strptime(orders_df$Buy.Ts, "%Y-%m-%d %H:%M:%S"))
+```
+
+
+```{r}
+sapply(visits_df, class)
+```
+
+
+```{r}
+visits_df %>% 
+  mutate(date = as.Date(Start.Ts)) %>% 
+  group_by(date) %>% 
+  summarise(
+    DAU = n_distinct(Uid)
+)
 ```
