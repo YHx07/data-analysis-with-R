@@ -17,6 +17,7 @@ install.packages("tsibble")
 ```{r message=FALSE, warning=TRUE}
 library(dbplyr)
 library(dplyr)
+library(tidyr)
 library(lubridate)
 
 setwd("~/mipt-course/pavlov")
@@ -163,7 +164,6 @@ mean(TBU_first_6_months_df$TBU_first_6_months)
 
 ```{r}
 visits_x_orders_df <- visits_df %>%
-  mutate(Date = as.Date(Start.Ts)) %>%
   inner_join(orders_df, by = "Uid") %>%
   filter(Buy.Ts <= End.Ts) %>%
   filter(Buy.Ts >= Start.Ts)
@@ -173,8 +173,52 @@ mean(visits_x_orders_df$Revenue)
 
 ### 8. Сколько денег обычно приносит в среднем один покупатель каждый месяц в течение первых полугода с момента первой покупки?
 
+```{r}
+first_purchase_df <- orders_df %>% 
+  select(Uid, Buy.Ts) %>% 
+  group_by(Uid) %>% 
+  summarise(first_purchase.Ts = min(Buy.Ts))
+
+six_months_in_sec <- 365.25 / 2 * 24 * 60 * 60
+
+first_purchase_df %>%
+  inner_join(orders_df, by = "Uid") %>%
+  mutate(Date = as.Date(Buy.Ts)) %>%
+  mutate(Time_delta = Buy.Ts - first_purchase.Ts) %>%
+  filter(Time_delta < six_months_in_sec) %>%
+  mutate(Epoch = as.integer(floor(Time_delta / 2592000))) %>%
+  group_by(Epoch) %>%
+  summarise(Avg_check = mean(Revenue))
+```
+
 ### 9. Сколько денег потратили маркетологи всего и на каждый рекламный канал?
 
+```{r}
+sum(costs_df$Costs)
+
+costs_per_source_df <- costs_df %>%
+  group_by(Source.Id) %>%
+  summarise(Costs_per_Source.Id = sum(Costs))
+
+costs_per_source_df
+```
+
+
 ### 10. Как окупаются расходы на каждый рекламный канал?
+
+```{r}
+visits_with_orders_df <- visits_df %>%
+  left_join(orders_df, by = "Uid") %>%
+  filter(Buy.Ts <= End.Ts) %>%
+  filter(Buy.Ts >= Start.Ts)
+
+visits_with_orders_Revenue_per_Source.Id_df <- visits_with_orders_df %>%
+  group_by(Source.Id) %>%
+  summarise(Revenue_per_Source.Id = sum(Revenue))
+
+visits_with_orders_Revenue_per_Source.Id_df %>%
+  left_join(costs_per_source_df) %>%
+  mutate(Profit = Revenue_per_Source.Id - Costs_per_Source.Id)
+```
 
 ### 11. Какие рекламные каналы следует выключить, а в какие нужно инвестировать больше? Ответ аргументируйте.
