@@ -1,9 +1,5 @@
 ---
 title: "R Notebook"
-output:
-  html_document:
-    df_print: paged
-  pdf_document: default
 ---
 
 # Quantitative analysis business case
@@ -16,7 +12,6 @@ output:
 # For dates
 install.packages("lubridate") 
 install.packages("tsibble")
-install.packages("modeest")
 ```
 
 ```{r message=FALSE, warning=TRUE}
@@ -97,7 +92,8 @@ visits_df %>%
 ```{r}
 get_mode_in_sec <- function(x) {
  a <- table(x)
- paste(c(as.numeric(names(a)[a == max(a)]), "sec"), collapse = " ")
+ ans <- paste(c(as.numeric(names(a)[a == max(a)]), "sec"), collapse = " ")
+ return(ans)
 }
 
 first_visits_df <- visits_df %>% 
@@ -110,16 +106,59 @@ first_purchase_df <- orders_df %>%
   group_by(Uid) %>% 
   summarise(first_purchase.Ts = min(Buy.Ts))
 
-first_purchase <- first_visits_df %>%
+visit_first_purchase_df <- first_visits_df %>%
   inner_join(first_purchase_df, by = "Uid") %>% 
   mutate(time_to_purchase = first_purchase.Ts - first_visit.Ts)
 
-get_mode_in_sec(first_purchase$time_to_purchase)
+get_mode_in_sec(visit_first_purchase_df$time_to_purchase)
 ```
 
 ### 5. Какая доля посетителей что-то покупает?
 
+Первое приближение. Бывают сессии, когда покупка происходит раньше начала сессии.
+
+```{r}
+purchase_per_visit <- function(x, y) {
+  a = length(which(!is.na(visits_orders_df$Revenue)))
+  b = length(which(is.na(visits_orders_df$Revenue)))
+  return(a / (a + b))
+}
+
+visits_with_orders_df <- visits_df %>%
+  left_join(orders_df, by = "Uid") %>%
+  filter(Buy.Ts <= End.Ts) %>%
+  filter(Buy.Ts >= Start.Ts)
+
+visits_without_orders_df <- visits_df %>%
+  left_join(orders_df, by = "Uid") %>%
+  filter(is.na(Buy.Ts)) 
+
+visits_orders_df <- rbind(visits_with_orders_df, visits_without_orders_df)
+
+purchase_per_visit(visits_orders_df)
+```
+
 ### 6. Сколько раз в среднем один человек покупает билеты в течение 6 месяцев с момента первой покупки?
+
+```{r}
+first_purchase_df <- orders_df %>% 
+  select(Uid, Buy.Ts) %>% 
+  group_by(Uid) %>% 
+  summarise(first_purchase.Ts = min(Buy.Ts))
+
+six_months_in_sec <- 365.25 / 2 * 24 * 60 * 60
+
+TBU_first_6_months_df <- first_purchase_df %>%
+  left_join(orders_df, by = "Uid") %>%
+  mutate(time_delta = first_purchase.Ts - Buy.Ts) %>%
+  filter(time_delta < six_months_in_sec) %>%
+  group_by(Uid) %>% 
+  summarise(TBU_first_6_months = n())
+
+mean(TBU_first_6_months_df$TBU_first_6_months)
+
+```
+
 
 ### 7. Какой средний чек сервиса?
 

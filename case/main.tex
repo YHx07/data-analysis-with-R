@@ -331,9 +331,9 @@ MAU:
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{getmode }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(x) \{}
+\NormalTok{get\_mode\_in\_sec }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(x) \{}
 \NormalTok{ a }\OtherTok{\textless{}{-}} \FunctionTok{table}\NormalTok{(x)}
- \FunctionTok{as.numeric}\NormalTok{(}\FunctionTok{names}\NormalTok{(a)[a }\SpecialCharTok{==} \FunctionTok{max}\NormalTok{(a)])}
+ \FunctionTok{paste}\NormalTok{(}\FunctionTok{c}\NormalTok{(}\FunctionTok{as.numeric}\NormalTok{(}\FunctionTok{names}\NormalTok{(a)[a }\SpecialCharTok{==} \FunctionTok{max}\NormalTok{(a)]), }\StringTok{"sec"}\NormalTok{), }\AttributeTok{collapse =} \StringTok{" "}\NormalTok{)}
 \NormalTok{\}}
 
 \NormalTok{first\_visits\_df }\OtherTok{\textless{}{-}}\NormalTok{ visits\_df }\SpecialCharTok{\%\textgreater{}\%} 
@@ -350,12 +350,12 @@ MAU:
   \FunctionTok{inner\_join}\NormalTok{(first\_purchase\_df, }\AttributeTok{by =} \StringTok{"Uid"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
   \FunctionTok{mutate}\NormalTok{(}\AttributeTok{time\_to\_purchase =}\NormalTok{ first\_purchase.Ts }\SpecialCharTok{{-}}\NormalTok{ first\_visit.Ts)}
 
-\FunctionTok{getmode}\NormalTok{(first\_purchase}\SpecialCharTok{$}\NormalTok{time\_to\_purchase)}
+\FunctionTok{get\_mode\_in\_sec}\NormalTok{(first\_purchase}\SpecialCharTok{$}\NormalTok{time\_to\_purchase)}
 \end{Highlighting}
 \end{Shaded}
 
 \begin{verbatim}
-## [1] 60
+## [1] "60 sec"
 \end{verbatim}
 
 \hypertarget{ux43aux430ux43aux430ux44f-ux434ux43eux43bux44f-ux43fux43eux441ux435ux442ux438ux442ux435ux43bux435ux439-ux447ux442ux43e-ux442ux43e-ux43fux43eux43aux443ux43fux430ux435ux442}{%
