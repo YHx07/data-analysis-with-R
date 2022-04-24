@@ -162,15 +162,13 @@ mean(TBU_first_6_months_df$TBU_first_6_months)
 
 
 ```{r}
-visit_x_order_x_price_df <- visits_df %>%
+visits_x_orders_df <- visits_df %>%
   mutate(Date = as.Date(Start.Ts)) %>%
-  inner_join(costs_df, by = c("Source.Id", "Date")) %>%
   inner_join(orders_df, by = "Uid") %>%
   filter(Buy.Ts <= End.Ts) %>%
-  filter(Buy.Ts >= Start.Ts) %>%
-  mutate(Price = Revenue + Costs)
+  filter(Buy.Ts >= Start.Ts)
 
-mean(visit_x_order_x_price_df$Price)
+mean(visits_x_orders_df$Revenue)
 ```
 
 ### 8. Сколько денег обычно приносит в среднем один покупатель каждый месяц в течение первых полугода с момента первой покупки?
