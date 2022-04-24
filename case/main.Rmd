@@ -1,26 +1,29 @@
 ---
 title: "R Notebook"
-output: html_notebook
+output:
+  html_document:
+    df_print: paged
+  pdf_document: default
 ---
 
 # Quantitative analysis business case
 
 Вы работаете интернет-сервисе по продаже билетов в кино и на концерты. Посетители заходят на сайт сервиса, читают рецензии, смотрят расписание кинотеатров, выбирают понравившийся сеанс и покупают билеты.
 
-Маркетологи сервиса просят вас помочь им оптимизировать рекламные расходы.
-У вас в распоряжении есть данные о посещениях сервиса, заказах и рекламных расходах.
+Маркетологи сервиса просят вас помочь им оптимизировать рекламные расходы. У вас в распоряжении есть данные о посещениях сервиса, заказах и рекламных расходах.
 
-```{r}
+```{r message=FALSE, warning=TRUE, include=FALSE}
 # For dates
 install.packages("lubridate") 
 install.packages("tsibble")
+install.packages("modeest")
 ```
 
-```{r}
+```{r message=FALSE, warning=TRUE}
 library(dbplyr)
 library(dplyr)
 library(lubridate)
-library(tsibble)
+library(modeest)
 
 setwd("~/mipt-course/pavlov")
 costs_df <- read.csv(file = 'data/costs.csv', header = T, sep = ",")
@@ -32,7 +35,6 @@ visits_df$Start.Ts <- strptime(visits_df$Start.Ts, "%d.%m.%Y %H:%M")
 visits_df$End.Ts <- strptime(visits_df$End.Ts, "%d.%m.%Y %H:%M")
 orders_df$Buy.Ts <- strptime(orders_df$Buy.Ts, "%Y-%m-%d %H:%M:%S")
 ```
-
 
 ```{r}
 sapply(visits_df, class)
@@ -46,10 +48,9 @@ DAU:
 visits_df %>% 
   mutate(date = as.Date(Start.Ts, "%Y-%m-%d")) %>% 
   group_by(date) %>% 
-  summarise(
-    DAU = n_distinct(Uid)
-)
+  summarise(DAU = n_distinct(Uid))
 ```
+
 WAU
 
 ```{r}
@@ -57,9 +58,7 @@ visits_df %>%
   mutate(date = as.Date(Start.Ts, "%Y-%m-%d")) %>% 
   mutate(year_week = format(date, "%Y-%W"))  %>% 
   group_by(year_week) %>% 
-  summarise(
-    WAU = n_distinct(Uid)
-)
+  summarise(WAU = n_distinct(Uid))
 ```
 
 MAU:
@@ -69,9 +68,7 @@ visits_df %>%
   mutate(date = as.Date(Start.Ts, "%Y-%m-%d")) %>% 
   mutate(year_month = format(date, "%Y-%m"))  %>% 
   group_by(year_month) %>% 
-  summarise(
-    MAU = n_distinct(Uid)
-)
+  summarise(MAU = n_distinct(Uid))
 ```
 
 ### 2. Сколько в среднем сессий приходится на одного пользователя в день?
@@ -92,16 +89,44 @@ visits_df %>%
   mutate(session_length = End.Ts - Start.Ts) %>% 
   mutate(date = as.Date(Start.Ts, "%Y-%m-%d")) %>% 
   group_by(date) %>% 
-  summarise(
-    avg_session_length = mean(session_length)
-)
+  summarise(avg_session_length = mean(session_length))
 ```
 
 ### 4. Сколько дней обычно (мода) проходит между первым посещением и первой покупкой?
+
+```{r}
+get_mode_in_sec <- function(x) {
+ a <- table(x)
+ paste(c(as.numeric(names(a)[a == max(a)]), "sec"), collapse = " ")
+}
+
+first_visits_df <- visits_df %>% 
+  select(Uid, Start.Ts) %>% 
+  group_by(Uid) %>% 
+  summarise(first_visit.Ts = min(Start.Ts))
+
+first_purchase_df <- orders_df %>% 
+  select(Uid, Buy.Ts) %>% 
+  group_by(Uid) %>% 
+  summarise(first_purchase.Ts = min(Buy.Ts))
+
+first_purchase <- first_visits_df %>%
+  inner_join(first_purchase_df, by = "Uid") %>% 
+  mutate(time_to_purchase = first_purchase.Ts - first_visit.Ts)
+
+get_mode_in_sec(first_purchase$time_to_purchase)
+```
+
 ### 5. Какая доля посетителей что-то покупает?
+
 ### 6. Сколько раз в среднем один человек покупает билеты в течение 6 месяцев с момента первой покупки?
+
 ### 7. Какой средний чек сервиса?
+
 ### 8. Сколько денег обычно приносит в среднем один покупатель каждый месяц в течение первых полугода с момента первой покупки?
+
 ### 9. Сколько денег потратили маркетологи всего и на каждый рекламный канал?
+
 ### 10. Как окупаются расходы на каждый рекламный канал?
+
 ### 11. Какие рекламные каналы следует выключить, а в какие нужно инвестировать больше? Ответ аргументируйте.
