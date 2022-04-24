@@ -18,7 +18,6 @@ install.packages("tsibble")
 library(dbplyr)
 library(dplyr)
 library(lubridate)
-library(modeest)
 
 setwd("~/mipt-course/pavlov")
 costs_df <- read.csv(file = 'data/costs.csv', header = T, sep = ",")
@@ -29,10 +28,8 @@ costs_df$dt <- strptime(costs_df$dt, "%Y-%m-%d")
 visits_df$Start.Ts <- strptime(visits_df$Start.Ts, "%d.%m.%Y %H:%M")
 visits_df$End.Ts <- strptime(visits_df$End.Ts, "%d.%m.%Y %H:%M")
 orders_df$Buy.Ts <- strptime(orders_df$Buy.Ts, "%Y-%m-%d %H:%M:%S")
-```
 
-```{r}
-sapply(visits_df, class)
+colnames(costs_df) <- c("Source.Id", "Date", "Costs")
 ```
 
 ### 1. Сколько в среднем людей посещают сервис ежедневно, еженедельно, ежемесячно?
@@ -150,7 +147,7 @@ six_months_in_sec <- 365.25 / 2 * 24 * 60 * 60
 
 TBU_first_6_months_df <- first_purchase_df %>%
   left_join(orders_df, by = "Uid") %>%
-  mutate(time_delta = first_purchase.Ts - Buy.Ts) %>%
+  mutate(time_delta = Buy.Ts - first_purchase.Ts) %>%
   filter(time_delta < six_months_in_sec) %>%
   group_by(Uid) %>% 
   summarise(TBU_first_6_months = n())
@@ -159,8 +156,22 @@ mean(TBU_first_6_months_df$TBU_first_6_months)
 
 ```
 
-
 ### 7. Какой средний чек сервиса?
+
+Первое приближение. Бывают сессии, когда покупка происходит раньше начала сессии.
+
+
+```{r}
+visit_x_order_x_price_df <- visits_df %>%
+  mutate(Date = as.Date(Start.Ts)) %>%
+  inner_join(costs_df, by = c("Source.Id", "Date")) %>%
+  inner_join(orders_df, by = "Uid") %>%
+  filter(Buy.Ts <= End.Ts) %>%
+  filter(Buy.Ts >= Start.Ts) %>%
+  mutate(Price = Revenue + Costs)
+
+mean(visit_x_order_x_price_df$Price)
+```
 
 ### 8. Сколько денег обычно приносит в среднем один покупатель каждый месяц в течение первых полугода с момента первой покупки?
 
