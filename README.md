@@ -10,6 +10,8 @@ We start diving into R with https://swirlstats.com
 
 ## Quantitative analysis business case
 
+## Publishing
+
 ## In the end
 
 I deployed RStudio server on https://cloud.digitalocean.com. 
