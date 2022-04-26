@@ -19,6 +19,8 @@ library(dbplyr)
 library(dplyr)
 library(tidyr)
 library(lubridate)
+library(zoo)
+library(ggplot2)
 
 setwd("~/mipt-course/pavlov")
 costs_df <- read.csv(file = 'data/costs.csv', header = T, sep = ",")
@@ -38,51 +40,61 @@ colnames(costs_df) <- c("Source.Id", "Date", "Costs")
 DAU:
 
 ```{r}
-visits_df %>% 
+dau_df <- visits_df %>% 
   mutate(date = as.Date(Start.Ts, "%Y-%m-%d")) %>% 
   group_by(date) %>% 
   summarise(DAU = n_distinct(Uid))
+
+mean(dau_df$DAU)
 ```
 
 WAU
 
 ```{r}
-visits_df %>% 
+wau_df <- visits_df %>% 
   mutate(date = as.Date(Start.Ts, "%Y-%m-%d")) %>% 
   mutate(year_week = format(date, "%Y-%W"))  %>% 
   group_by(year_week) %>% 
   summarise(WAU = n_distinct(Uid))
+
+mean(wau_df$WAU)
 ```
 
 MAU:
 
 ```{r}
-visits_df %>% 
+mau_df <- visits_df %>% 
   mutate(date = as.Date(Start.Ts, "%Y-%m-%d")) %>% 
   mutate(year_month = format(date, "%Y-%m"))  %>% 
   group_by(year_month) %>% 
   summarise(MAU = n_distinct(Uid))
+
+mean(mau_df$MAU)
 ```
 
 ### 2. Сколько в среднем сессий приходится на одного пользователя в день?
 
 ```{r}
-visits_df %>%
+mean_sessions_count_df <- visits_df %>%
   mutate(date = as.Date(Start.Ts, "%Y-%m-%d")) %>% 
   group_by(Uid, date) %>% 
   summarise(count = n()) %>% 
   group_by(date) %>% 
   summarise(mean_sessions_count = mean(count))
+
+mean(mean_sessions_count_df$mean_sessions_count)
 ```
 
 ### 3. Сколько в среднем длится одна сессия?
 
 ```{r}
-visits_df %>% 
+avg_session_length_df <- visits_df %>% 
   mutate(session_length = End.Ts - Start.Ts) %>% 
   mutate(date = as.Date(Start.Ts, "%Y-%m-%d")) %>% 
   group_by(date) %>% 
   summarise(avg_session_length = mean(session_length))
+
+mean(avg_session_length_df$avg_session_length)
 ```
 
 ### 4. Сколько дней обычно (мода) проходит между первым посещением и первой покупкой?
@@ -185,8 +197,8 @@ first_purchase_df %>%
   inner_join(orders_df, by = "Uid") %>%
   mutate(Date = as.Date(Buy.Ts)) %>%
   mutate(Time_delta = Buy.Ts - first_purchase.Ts) %>%
-  filter(Time_delta < six_months_in_sec) %>%
-  mutate(Epoch = as.integer(floor(Time_delta / 2592000))) %>%
+  mutate(Epoch = as.integer(floor(Time_delta / 2592000)) + 1) %>%
+  filter(Epoch <= 6) %>%
   group_by(Epoch) %>%
   summarise(Avg_check = mean(Revenue))
 ```
@@ -222,3 +234,59 @@ visits_with_orders_Revenue_per_Source.Id_df %>%
 ```
 
 ### 11. Какие рекламные каналы следует выключить, а в какие нужно инвестировать больше? Ответ аргументируйте.
+
+Расходы на маркетинг в неделю:
+
+```{r}
+costs_per_source_df <- costs_df %>%
+  mutate(yw =  format(Date, "%Y-%W"))  %>% 
+  group_by(Source.Id, yw) %>%
+  summarise(Costs_per_Source.Id = sum(Costs))
+
+costs_source <- costs_per_source_df %>% 
+  pivot_wider(names_from = yw, values_from = Costs_per_Source.Id)
+
+costs_source
+```
+
+Прибыль за неделю:
+
+```{r}
+visits_with_orders_df <- visits_df %>%
+  left_join(orders_df, by = "Uid") %>%
+  filter(Buy.Ts <= End.Ts) %>%
+  filter(Buy.Ts >= Start.Ts) %>% 
+  mutate(yw =  format(Buy.Ts, "%Y-%W")) 
+
+visits_with_orders_Revenue_per_Source.Id_df <- visits_with_orders_df %>%
+  group_by(Source.Id, yw) %>%
+  summarise(Revenue_per_Source.Id = sum(Revenue))
+
+revenue_source <- visits_with_orders_Revenue_per_Source.Id_df %>%
+  pivot_wider(names_from = yw, values_from = Revenue_per_Source.Id)
+
+revenue_source
+```
+
+Видим, что на момент последней недели окупаются 1, 2, 10 каналы.
+
+Для наглядности построим графики, срвним недельные затраты на маркетинг и прибыль за неделю в каждом из каналов.
+
+```{r}
+compare_dd <- visits_with_orders_Revenue_per_Source.Id_df %>%
+  left_join(costs_per_source_df) %>%
+  gather(key="Type", value="Value", 3:4)
+
+ggplot(data = compare_dd, 
+       mapping = aes(x = yw, y = Value)) +
+  geom_line(aes(colour = Type, group = Type)) +
+  facet_grid(rows = vars(Source.Id), scales = "free_y")
+```
+
+Выводы:
+1. Первый канал. Добиться большей стабильности работы первого канала, например за счет увеличения объемов продаж. Видно, что была попытка увеличения затрат на маркетинг, это привело к хорошему росту прибыли. Нужно увеличить инвестиции до 500 в неделю.
+2. Второй канал. Продолжить развивать второй канал, постараться оптимизировать затраты на маркетинг. Затем снова попробовать увеличить инвестиции в этот канал (видно, что у продаж хороший отклик на рост инвестиций).
+3. Третий канал нужно заморозить. Видно, что была попытка увеличить инвестиции в этот канал, но продажи не выросли.
+4. Четвертый канал. Ситуация частично похожа на второй канал: есть рост продаж при росте затрат на маркетинг, но получить прибыль не получилось. В этом канале нужно временно сокартить затраты и заняться разработкой новой маркетинговой стратегии, основанной на опыте этого канала.
+5. Пятый канал нужно заморозить. Была попытка увеличивать затрты на маркетинг, но прибыль быстро упала после увеличения бюджета.
+6. Девятый и десятый канал не генерируют большого убытка, но при этом добавляют разнообразия в продажи. С этими каналами в будущем нужно провести эксперименты с увеличением бюджета до 250.
