@@ -4,7 +4,7 @@
 
 ## Intro
 
-We start diving into R with https://swirlstats.com
+Diving into R with https://swirlstats.com
 
 ## In the end
 
