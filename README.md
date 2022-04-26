@@ -1,10 +1,18 @@
 # Data analysis with R
 
-> Problem solving, Data Analysis course at MIPT
+> Data Analysis course at MIPT
 
 ## Intro
 
-Diving into R with https://swirlstats.com
+We start diving into R with https://swirlstats.com
+
+## RStudio with DataBase
+
+## Quantitative analysis business case
+
+## Publishing
+
+https://rpubs.com/YHx07/894083
 
 ## In the end
 
