@@ -12,6 +12,8 @@ We start diving into R with https://swirlstats.com
 
 ## Publishing
 
+https://rpubs.com/YHx07/894083
+
 ## In the end
 
 I deployed RStudio server on https://cloud.digitalocean.com. 
