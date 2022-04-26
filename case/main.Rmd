@@ -1,0 +1,294 @@
+---
+title: "Quantitative analysis business case"
+---
+
+Вы работаете интернет-сервисе по продаже билетов в кино и на концерты. Посетители заходят на сайт сервиса, читают рецензии, смотрят расписание кинотеатров, выбирают понравившийся сеанс и покупают билеты.
+
+Маркетологи сервиса просят вас помочь им оптимизировать рекламные расходы. У вас в распоряжении есть данные о посещениях сервиса, заказах и рекламных расходах.
+
+```{r message=FALSE, warning=TRUE, include=FALSE}
+# For dates
+install.packages("lubridate") 
+install.packages("tsibble")
+```
+
+```{r message=FALSE, warning=TRUE}
+library(dbplyr)
+library(dplyr)
+library(tidyr)
+library(lubridate)
+library(zoo)
+library(ggplot2)
+
+setwd("~/mipt-course/pavlov")
+costs_df <- read.csv(file = 'data/costs.csv', header = T, sep = ",")
+visits_df  <- read.csv(file = 'data/visits_log.csv', header = T, sep = ",")
+orders_df  <- read.csv(file = 'data/orders_log.csv', header = T, sep = ",")
+
+costs_df$dt <- strptime(costs_df$dt, "%Y-%m-%d")
+visits_df$Start.Ts <- strptime(visits_df$Start.Ts, "%d.%m.%Y %H:%M")
+visits_df$End.Ts <- strptime(visits_df$End.Ts, "%d.%m.%Y %H:%M")
+orders_df$Buy.Ts <- strptime(orders_df$Buy.Ts, "%Y-%m-%d %H:%M:%S")
+
+colnames(costs_df) <- c("Source.Id", "Date", "Costs")
+```
+
+### 1. Сколько в среднем людей посещают сервис ежедневно, еженедельно, ежемесячно?
+
+DAU:
+
+```{r}
+dau_df <- visits_df %>% 
+  mutate(date = as.Date(Start.Ts, "%Y-%m-%d")) %>% 
+  group_by(date) %>% 
+  summarise(DAU = n_distinct(Uid))
+
+mean(dau_df$DAU)
+```
+
+WAU
+
+```{r}
+wau_df <- visits_df %>% 
+  mutate(date = as.Date(Start.Ts, "%Y-%m-%d")) %>% 
+  mutate(year_week = format(date, "%Y-%W"))  %>% 
+  group_by(year_week) %>% 
+  summarise(WAU = n_distinct(Uid))
+
+mean(wau_df$WAU)
+```
+
+MAU:
+
+```{r}
+mau_df <- visits_df %>% 
+  mutate(date = as.Date(Start.Ts, "%Y-%m-%d")) %>% 
+  mutate(year_month = format(date, "%Y-%m"))  %>% 
+  group_by(year_month) %>% 
+  summarise(MAU = n_distinct(Uid))
+
+mean(mau_df$MAU)
+```
+
+### 2. Сколько в среднем сессий приходится на одного пользователя в день?
+
+```{r}
+mean_sessions_count_df <- visits_df %>%
+  mutate(date = as.Date(Start.Ts, "%Y-%m-%d")) %>% 
+  group_by(Uid, date) %>% 
+  summarise(count = n()) %>% 
+  group_by(date) %>% 
+  summarise(mean_sessions_count = mean(count))
+
+mean(mean_sessions_count_df$mean_sessions_count)
+```
+
+### 3. Сколько в среднем длится одна сессия?
+
+```{r}
+avg_session_length_df <- visits_df %>% 
+  mutate(session_length = End.Ts - Start.Ts) %>% 
+  mutate(date = as.Date(Start.Ts, "%Y-%m-%d")) %>% 
+  group_by(date) %>% 
+  summarise(avg_session_length = mean(session_length))
+
+mean(avg_session_length_df$avg_session_length)
+```
+
+### 4. Сколько дней обычно (мода) проходит между первым посещением и первой покупкой?
+
+```{r}
+get_mode_in_sec <- function(x) {
+ a <- table(x)
+ ans <- paste(c(as.numeric(names(a)[a == max(a)]), "sec"), collapse = " ")
+ return(ans)
+}
+
+first_visits_df <- visits_df %>% 
+  select(Uid, Start.Ts) %>% 
+  group_by(Uid) %>% 
+  summarise(first_visit.Ts = min(Start.Ts))
+
+first_purchase_df <- orders_df %>% 
+  select(Uid, Buy.Ts) %>% 
+  group_by(Uid) %>% 
+  summarise(first_purchase.Ts = min(Buy.Ts))
+
+visit_first_purchase_df <- first_visits_df %>%
+  inner_join(first_purchase_df, by = "Uid") %>% 
+  mutate(time_to_purchase = first_purchase.Ts - first_visit.Ts)
+
+get_mode_in_sec(visit_first_purchase_df$time_to_purchase)
+```
+
+### 5. Какая доля посетителей что-то покупает?
+
+Первое приближение. Бывают сессии, когда покупка происходит раньше начала сессии.
+
+```{r}
+purchase_per_visit <- function(x, y) {
+  a = length(which(!is.na(visits_orders_df$Revenue)))
+  b = length(which(is.na(visits_orders_df$Revenue)))
+  return(a / (a + b))
+}
+
+visits_with_orders_df <- visits_df %>%
+  left_join(orders_df, by = "Uid") %>%
+  filter(Buy.Ts <= End.Ts) %>%
+  filter(Buy.Ts >= Start.Ts)
+
+visits_without_orders_df <- visits_df %>%
+  left_join(orders_df, by = "Uid") %>%
+  filter(is.na(Buy.Ts)) 
+
+visits_orders_df <- rbind(visits_with_orders_df, visits_without_orders_df)
+
+purchase_per_visit(visits_orders_df)
+```
+
+### 6. Сколько раз в среднем один человек покупает билеты в течение 6 месяцев с момента первой покупки?
+
+```{r}
+first_purchase_df <- orders_df %>% 
+  select(Uid, Buy.Ts) %>% 
+  group_by(Uid) %>% 
+  summarise(first_purchase.Ts = min(Buy.Ts))
+
+six_months_in_sec <- 365.25 / 2 * 24 * 60 * 60
+
+TBU_first_6_months_df <- first_purchase_df %>%
+  left_join(orders_df, by = "Uid") %>%
+  mutate(time_delta = Buy.Ts - first_purchase.Ts) %>%
+  filter(time_delta < six_months_in_sec) %>%
+  group_by(Uid) %>% 
+  summarise(TBU_first_6_months = n())
+
+mean(TBU_first_6_months_df$TBU_first_6_months)
+
+```
+
+### 7. Какой средний чек сервиса?
+
+Первое приближение. Бывают сессии, когда покупка происходит раньше начала сессии.
+
+```{r}
+visits_x_orders_df <- visits_df %>%
+  inner_join(orders_df, by = "Uid") %>%
+  filter(Buy.Ts <= End.Ts) %>%
+  filter(Buy.Ts >= Start.Ts)
+
+mean(visits_x_orders_df$Revenue)
+```
+
+### 8. Сколько денег обычно приносит в среднем один покупатель каждый месяц в течение первых полугода с момента первой покупки?
+
+```{r}
+first_purchase_df <- orders_df %>% 
+  select(Uid, Buy.Ts) %>% 
+  group_by(Uid) %>% 
+  summarise(first_purchase.Ts = min(Buy.Ts))
+
+six_months_in_sec <- 365.25 / 2 * 24 * 60 * 60
+
+first_purchase_df %>%
+  inner_join(orders_df, by = "Uid") %>%
+  mutate(Date = as.Date(Buy.Ts)) %>%
+  mutate(Time_delta = Buy.Ts - first_purchase.Ts) %>%
+  mutate(Epoch = as.integer(floor(Time_delta / 2592000)) + 1) %>%
+  filter(Epoch <= 6) %>%
+  group_by(Epoch) %>%
+  summarise(Avg_check = mean(Revenue))
+```
+
+### 9. Сколько денег потратили маркетологи всего и на каждый рекламный канал?
+
+```{r}
+sum(costs_df$Costs)
+
+costs_per_source_df <- costs_df %>%
+  group_by(Source.Id) %>%
+  summarise(Costs_per_Source.Id = sum(Costs))
+
+costs_per_source_df
+```
+
+### 10. Как окупаются расходы на каждый рекламный канал?
+
+```{r}
+visits_with_orders_df <- visits_df %>%
+  left_join(orders_df, by = "Uid") %>%
+  filter(Buy.Ts <= End.Ts) %>%
+  filter(Buy.Ts >= Start.Ts)
+
+visits_with_orders_Revenue_per_Source.Id_df <- visits_with_orders_df %>%
+  group_by(Source.Id) %>%
+  summarise(Revenue_per_Source.Id = sum(Revenue))
+
+visits_with_orders_Revenue_per_Source.Id_df %>%
+  left_join(costs_per_source_df) %>%
+  mutate(Profit = Revenue_per_Source.Id - Costs_per_Source.Id)
+```
+
+### 11. Какие рекламные каналы следует выключить, а в какие нужно инвестировать больше? Ответ аргументируйте.
+
+Расходы на маркетинг в неделю:
+
+```{r}
+costs_per_source_df <- costs_df %>%
+  mutate(yw =  format(Date, "%Y-%W"))  %>% 
+  group_by(Source.Id, yw) %>%
+  summarise(Costs_per_Source.Id = sum(Costs))
+
+costs_source <- costs_per_source_df %>% 
+  pivot_wider(names_from = yw, values_from = Costs_per_Source.Id)
+
+costs_source
+```
+
+Прибыль за неделю:
+
+```{r}
+visits_with_orders_df <- visits_df %>%
+  left_join(orders_df, by = "Uid") %>%
+  filter(Buy.Ts <= End.Ts) %>%
+  filter(Buy.Ts >= Start.Ts) %>% 
+  mutate(yw =  format(Buy.Ts, "%Y-%W")) 
+
+visits_with_orders_Revenue_per_Source.Id_df <- visits_with_orders_df %>%
+  group_by(Source.Id, yw) %>%
+  summarise(Revenue_per_Source.Id = sum(Revenue))
+
+revenue_source <- visits_with_orders_Revenue_per_Source.Id_df %>%
+  pivot_wider(names_from = yw, values_from = Revenue_per_Source.Id)
+
+revenue_source
+```
+
+Видим, что на момент последней недели окупаются 1, 2, 10 каналы.
+
+Для наглядности построим графики, срвним недельные затраты на маркетинг и прибыль за неделю в каждом из каналов.
+
+```{r}
+compare_dd <- visits_with_orders_Revenue_per_Source.Id_df %>%
+  left_join(costs_per_source_df) %>%
+  gather(key="Type", value="Value", 3:4)
+
+ggplot(data = compare_dd, 
+       mapping = aes(x = yw, y = Value)) +
+  geom_line(aes(colour = Type, group = Type)) +
+  facet_grid(rows = vars(Source.Id), scales = "free_y")
+```
+
+Выводы:
+
+1\. Первый канал. Добиться большей стабильности работы первого канала, например за счет увеличения объемов продаж. Видно, что была попытка увеличения затрат на маркетинг, это привело к хорошему росту прибыли. Нужно увеличить инвестиции до 500 в неделю.
+
+2\. Второй канал. Продолжить развивать второй канал, постараться оптимизировать затраты на маркетинг. Затем снова попробовать увеличить инвестиции в этот канал (видно, что у продаж хороший отклик на рост инвестиций).
+
+3\. Третий канал нужно заморозить. Видно, что была попытка увеличить инвестиции в этот канал, но продажи не выросли.
+
+4\. Четвертый канал. Ситуация частично похожа на второй канал: есть рост продаж при росте затрат на маркетинг, но получить прибыль не получилось. В этом канале нужно временно сокартить затраты и заняться разработкой новой маркетинговой стратегии, основанной на опыте этого канала.
+
+5\. Пятый канал нужно заморозить. Была попытка увеличивать затрты на маркетинг, но прибыль быстро упала после увеличения бюджета.
+
+6\. Девятый и десятый канал не генерируют большого убытка, но при этом добавляют разнообразия в продажи. С этими каналами в будущем нужно провести эксперименты с увеличением бюджета до 250.

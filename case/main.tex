@@ -1,0 +1,393 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+]{article}
+\usepackage{amsmath,amssymb}
+\usepackage{lmodern}
+\usepackage{ifxetex,ifluatex}
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math}
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\hypersetup{
+  pdftitle={R Notebook},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+\urlstyle{same} % disable monospaced font for URLs
+\usepackage[margin=1in]{geometry}
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\usepackage{graphicx}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\ifluatex
+  \usepackage{selnolig}  % disable illegal ligatures
+\fi
+
+\title{R Notebook}
+\author{}
+\date{\vspace{-2.5em}}
+
+\begin{document}
+\maketitle
+
+\hypertarget{quantitative-analysis-business-case}{%
+\section{Quantitative analysis business
+case}\label{quantitative-analysis-business-case}}
+
+Вы работаете интернет-сервисе по продаже билетов в кино и на концерты.
+Посетители заходят на сайт сервиса, читают рецензии, смотрят расписание
+кинотеатров, выбирают понравившийся сеанс и покупают билеты.
+
+Маркетологи сервиса просят вас помочь им оптимизировать рекламные
+расходы. У вас в распоряжении есть данные о посещениях сервиса, заказах
+и рекламных расходах.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(dbplyr)}
+\FunctionTok{library}\NormalTok{(dplyr)}
+\FunctionTok{library}\NormalTok{(lubridate)}
+\FunctionTok{library}\NormalTok{(modeest)}
+
+\FunctionTok{setwd}\NormalTok{(}\StringTok{"\textasciitilde{}/mipt{-}course/pavlov"}\NormalTok{)}
+\NormalTok{costs\_df }\OtherTok{\textless{}{-}} \FunctionTok{read.csv}\NormalTok{(}\AttributeTok{file =} \StringTok{\textquotesingle{}data/costs.csv\textquotesingle{}}\NormalTok{, }\AttributeTok{header =}\NormalTok{ T, }\AttributeTok{sep =} \StringTok{","}\NormalTok{)}
+\NormalTok{visits\_df  }\OtherTok{\textless{}{-}} \FunctionTok{read.csv}\NormalTok{(}\AttributeTok{file =} \StringTok{\textquotesingle{}data/visits\_log.csv\textquotesingle{}}\NormalTok{, }\AttributeTok{header =}\NormalTok{ T, }\AttributeTok{sep =} \StringTok{","}\NormalTok{)}
+\NormalTok{orders\_df  }\OtherTok{\textless{}{-}} \FunctionTok{read.csv}\NormalTok{(}\AttributeTok{file =} \StringTok{\textquotesingle{}data/orders\_log.csv\textquotesingle{}}\NormalTok{, }\AttributeTok{header =}\NormalTok{ T, }\AttributeTok{sep =} \StringTok{","}\NormalTok{)}
+
+\NormalTok{costs\_df}\SpecialCharTok{$}\NormalTok{dt }\OtherTok{\textless{}{-}} \FunctionTok{strptime}\NormalTok{(costs\_df}\SpecialCharTok{$}\NormalTok{dt, }\StringTok{"\%Y{-}\%m{-}\%d"}\NormalTok{)}
+\NormalTok{visits\_df}\SpecialCharTok{$}\NormalTok{Start.Ts }\OtherTok{\textless{}{-}} \FunctionTok{strptime}\NormalTok{(visits\_df}\SpecialCharTok{$}\NormalTok{Start.Ts, }\StringTok{"\%d.\%m.\%Y \%H:\%M"}\NormalTok{)}
+\NormalTok{visits\_df}\SpecialCharTok{$}\NormalTok{End.Ts }\OtherTok{\textless{}{-}} \FunctionTok{strptime}\NormalTok{(visits\_df}\SpecialCharTok{$}\NormalTok{End.Ts, }\StringTok{"\%d.\%m.\%Y \%H:\%M"}\NormalTok{)}
+\NormalTok{orders\_df}\SpecialCharTok{$}\NormalTok{Buy.Ts }\OtherTok{\textless{}{-}} \FunctionTok{strptime}\NormalTok{(orders\_df}\SpecialCharTok{$}\NormalTok{Buy.Ts, }\StringTok{"\%Y{-}\%m{-}\%d \%H:\%M:\%S"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{sapply}\NormalTok{(visits\_df, class)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## $Uid
+## [1] "numeric"
+## 
+## $Device
+## [1] "character"
+## 
+## $End.Ts
+## [1] "POSIXlt" "POSIXt" 
+## 
+## $Source.Id
+## [1] "integer"
+## 
+## $Start.Ts
+## [1] "POSIXlt" "POSIXt"
+\end{verbatim}
+
+\hypertarget{ux441ux43aux43eux43bux44cux43aux43e-ux432-ux441ux440ux435ux434ux43dux435ux43c-ux43bux44eux434ux435ux439-ux43fux43eux441ux435ux449ux430ux44eux442-ux441ux435ux440ux432ux438ux441-ux435ux436ux435ux434ux43dux435ux432ux43dux43e-ux435ux436ux435ux43dux435ux434ux435ux43bux44cux43dux43e-ux435ux436ux435ux43cux435ux441ux44fux447ux43dux43e}{%
+\subsubsection{1. Сколько в среднем людей посещают сервис ежедневно,
+еженедельно,
+ежемесячно?}\label{ux441ux43aux43eux43bux44cux43aux43e-ux432-ux441ux440ux435ux434ux43dux435ux43c-ux43bux44eux434ux435ux439-ux43fux43eux441ux435ux449ux430ux44eux442-ux441ux435ux440ux432ux438ux441-ux435ux436ux435ux434ux43dux435ux432ux43dux43e-ux435ux436ux435ux43dux435ux434ux435ux43bux44cux43dux43e-ux435ux436ux435ux43cux435ux441ux44fux447ux43dux43e}}
+
+DAU:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{visits\_df }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{date =} \FunctionTok{as.Date}\NormalTok{(Start.Ts, }\StringTok{"\%Y{-}\%m{-}\%d"}\NormalTok{)) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{group\_by}\NormalTok{(date) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{summarise}\NormalTok{(}\AttributeTok{DAU =} \FunctionTok{n\_distinct}\NormalTok{(Uid))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 364 x 2
+##    date         DAU
+##    <date>     <int>
+##  1 2017-06-01   605
+##  2 2017-06-02   608
+##  3 2017-06-03   445
+##  4 2017-06-04   476
+##  5 2017-06-05   820
+##  6 2017-06-06   797
+##  7 2017-06-07   699
+##  8 2017-06-08   868
+##  9 2017-06-09   695
+## 10 2017-06-10   350
+## # ... with 354 more rows
+\end{verbatim}
+
+WAU
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{visits\_df }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{date =} \FunctionTok{as.Date}\NormalTok{(Start.Ts, }\StringTok{"\%Y{-}\%m{-}\%d"}\NormalTok{)) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{year\_week =} \FunctionTok{format}\NormalTok{(date, }\StringTok{"\%Y{-}\%W"}\NormalTok{))  }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{group\_by}\NormalTok{(year\_week) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{summarise}\NormalTok{(}\AttributeTok{WAU =} \FunctionTok{n\_distinct}\NormalTok{(Uid))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 53 x 2
+##    year_week   WAU
+##    <chr>     <int>
+##  1 2017-22    2021
+##  2 2017-23    4129
+##  3 2017-24    2812
+##  4 2017-25    2878
+##  5 2017-26    3064
+##  6 2017-27    3294
+##  7 2017-28    4355
+##  8 2017-29    3841
+##  9 2017-30    2655
+## 10 2017-31    2364
+## # ... with 43 more rows
+\end{verbatim}
+
+MAU:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{visits\_df }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{date =} \FunctionTok{as.Date}\NormalTok{(Start.Ts, }\StringTok{"\%Y{-}\%m{-}\%d"}\NormalTok{)) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{year\_month =} \FunctionTok{format}\NormalTok{(date, }\StringTok{"\%Y{-}\%m"}\NormalTok{))  }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{group\_by}\NormalTok{(year\_month) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{summarise}\NormalTok{(}\AttributeTok{MAU =} \FunctionTok{n\_distinct}\NormalTok{(Uid))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 12 x 2
+##    year_month   MAU
+##    <chr>      <int>
+##  1 2017-06    13259
+##  2 2017-07    14183
+##  3 2017-08    11631
+##  4 2017-09    18975
+##  5 2017-10    29692
+##  6 2017-11    32797
+##  7 2017-12    31557
+##  8 2018-01    28716
+##  9 2018-02    28749
+## 10 2018-03    27473
+## 11 2018-04    21008
+## 12 2018-05    20701
+\end{verbatim}
+
+\hypertarget{ux441ux43aux43eux43bux44cux43aux43e-ux432-ux441ux440ux435ux434ux43dux435ux43c-ux441ux435ux441ux441ux438ux439-ux43fux440ux438ux445ux43eux434ux438ux442ux441ux44f-ux43dux430-ux43eux434ux43dux43eux433ux43e-ux43fux43eux43bux44cux437ux43eux432ux430ux442ux435ux43bux44f-ux432-ux434ux435ux43dux44c}{%
+\subsubsection{2. Сколько в среднем сессий приходится на одного
+пользователя в
+день?}\label{ux441ux43aux43eux43bux44cux43aux43e-ux432-ux441ux440ux435ux434ux43dux435ux43c-ux441ux435ux441ux441ux438ux439-ux43fux440ux438ux445ux43eux434ux438ux442ux441ux44f-ux43dux430-ux43eux434ux43dux43eux433ux43e-ux43fux43eux43bux44cux437ux43eux432ux430ux442ux435ux43bux44f-ux432-ux434ux435ux43dux44c}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{visits\_df }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{date =} \FunctionTok{as.Date}\NormalTok{(Start.Ts, }\StringTok{"\%Y{-}\%m{-}\%d"}\NormalTok{)) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{group\_by}\NormalTok{(Uid, date) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{summarise}\NormalTok{(}\AttributeTok{count =} \FunctionTok{n}\NormalTok{()) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{group\_by}\NormalTok{(date) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{summarise}\NormalTok{(}\AttributeTok{mean\_sessions\_count =} \FunctionTok{mean}\NormalTok{(count))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## `summarise()` has grouped output by 'Uid'. You can override using the `.groups`
+## argument.
+\end{verbatim}
+
+\begin{verbatim}
+## # A tibble: 364 x 2
+##    date       mean_sessions_count
+##    <date>                   <dbl>
+##  1 2017-06-01                1.09
+##  2 2017-06-02                1.07
+##  3 2017-06-03                1.07
+##  4 2017-06-04                1.07
+##  5 2017-06-05                1.08
+##  6 2017-06-06                1.09
+##  7 2017-06-07                1.12
+##  8 2017-06-08                1.07
+##  9 2017-06-09                1.08
+## 10 2017-06-10                1.07
+## # ... with 354 more rows
+\end{verbatim}
+
+\hypertarget{ux441ux43aux43eux43bux44cux43aux43e-ux432-ux441ux440ux435ux434ux43dux435ux43c-ux434ux43bux438ux442ux441ux44f-ux43eux434ux43dux430-ux441ux435ux441ux441ux438ux44f}{%
+\subsubsection{3. Сколько в среднем длится одна
+сессия?}\label{ux441ux43aux43eux43bux44cux43aux43e-ux432-ux441ux440ux435ux434ux43dux435ux43c-ux434ux43bux438ux442ux441ux44f-ux43eux434ux43dux430-ux441ux435ux441ux441ux438ux44f}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{visits\_df }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{session\_length =}\NormalTok{ End.Ts }\SpecialCharTok{{-}}\NormalTok{ Start.Ts) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{date =} \FunctionTok{as.Date}\NormalTok{(Start.Ts, }\StringTok{"\%Y{-}\%m{-}\%d"}\NormalTok{)) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{group\_by}\NormalTok{(date) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{summarise}\NormalTok{(}\AttributeTok{avg\_session\_length =} \FunctionTok{mean}\NormalTok{(session\_length))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 364 x 2
+##    date       avg_session_length
+##    <date>     <drtn>            
+##  1 2017-06-01 669.2587 secs     
+##  2 2017-06-02 624.4410 secs     
+##  3 2017-06-03 608.1933 secs     
+##  4 2017-06-04 556.4173 secs     
+##  5 2017-06-05 628.5457 secs     
+##  6 2017-06-06 650.7480 secs     
+##  7 2017-06-07 649.3214 secs     
+##  8 2017-06-08 695.9871 secs     
+##  9 2017-06-09 602.2311 secs     
+## 10 2017-06-10 505.6000 secs     
+## # ... with 354 more rows
+\end{verbatim}
+
+\hypertarget{ux441ux43aux43eux43bux44cux43aux43e-ux434ux43dux435ux439-ux43eux431ux44bux447ux43dux43e-ux43cux43eux434ux430-ux43fux440ux43eux445ux43eux434ux438ux442-ux43cux435ux436ux434ux443-ux43fux435ux440ux432ux44bux43c-ux43fux43eux441ux435ux449ux435ux43dux438ux435ux43c-ux438-ux43fux435ux440ux432ux43eux439-ux43fux43eux43aux443ux43fux43aux43eux439}{%
+\subsubsection{4. Сколько дней обычно (мода) проходит между первым
+посещением и первой
+покупкой?}\label{ux441ux43aux43eux43bux44cux43aux43e-ux434ux43dux435ux439-ux43eux431ux44bux447ux43dux43e-ux43cux43eux434ux430-ux43fux440ux43eux445ux43eux434ux438ux442-ux43cux435ux436ux434ux443-ux43fux435ux440ux432ux44bux43c-ux43fux43eux441ux435ux449ux435ux43dux438ux435ux43c-ux438-ux43fux435ux440ux432ux43eux439-ux43fux43eux43aux443ux43fux43aux43eux439}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{get\_mode\_in\_sec }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(x) \{}
+\NormalTok{ a }\OtherTok{\textless{}{-}} \FunctionTok{table}\NormalTok{(x)}
+ \FunctionTok{paste}\NormalTok{(}\FunctionTok{c}\NormalTok{(}\FunctionTok{as.numeric}\NormalTok{(}\FunctionTok{names}\NormalTok{(a)[a }\SpecialCharTok{==} \FunctionTok{max}\NormalTok{(a)]), }\StringTok{"sec"}\NormalTok{), }\AttributeTok{collapse =} \StringTok{" "}\NormalTok{)}
+\NormalTok{\}}
+
+\NormalTok{first\_visits\_df }\OtherTok{\textless{}{-}}\NormalTok{ visits\_df }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{select}\NormalTok{(Uid, Start.Ts) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{group\_by}\NormalTok{(Uid) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{summarise}\NormalTok{(}\AttributeTok{first\_visit.Ts =} \FunctionTok{min}\NormalTok{(Start.Ts))}
+
+\NormalTok{first\_purchase\_df }\OtherTok{\textless{}{-}}\NormalTok{ orders\_df }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{select}\NormalTok{(Uid, Buy.Ts) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{group\_by}\NormalTok{(Uid) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{summarise}\NormalTok{(}\AttributeTok{first\_purchase.Ts =} \FunctionTok{min}\NormalTok{(Buy.Ts))}
+
+\NormalTok{first\_purchase }\OtherTok{\textless{}{-}}\NormalTok{ first\_visits\_df }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{inner\_join}\NormalTok{(first\_purchase\_df, }\AttributeTok{by =} \StringTok{"Uid"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{time\_to\_purchase =}\NormalTok{ first\_purchase.Ts }\SpecialCharTok{{-}}\NormalTok{ first\_visit.Ts)}
+
+\FunctionTok{get\_mode\_in\_sec}\NormalTok{(first\_purchase}\SpecialCharTok{$}\NormalTok{time\_to\_purchase)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "60 sec"
+\end{verbatim}
+
+\hypertarget{ux43aux430ux43aux430ux44f-ux434ux43eux43bux44f-ux43fux43eux441ux435ux442ux438ux442ux435ux43bux435ux439-ux447ux442ux43e-ux442ux43e-ux43fux43eux43aux443ux43fux430ux435ux442}{%
+\subsubsection{5. Какая доля посетителей что-то
+покупает?}\label{ux43aux430ux43aux430ux44f-ux434ux43eux43bux44f-ux43fux43eux441ux435ux442ux438ux442ux435ux43bux435ux439-ux447ux442ux43e-ux442ux43e-ux43fux43eux43aux443ux43fux430ux435ux442}}
+
+\hypertarget{ux441ux43aux43eux43bux44cux43aux43e-ux440ux430ux437-ux432-ux441ux440ux435ux434ux43dux435ux43c-ux43eux434ux438ux43d-ux447ux435ux43bux43eux432ux435ux43a-ux43fux43eux43aux443ux43fux430ux435ux442-ux431ux438ux43bux435ux442ux44b-ux432-ux442ux435ux447ux435ux43dux438ux435-6-ux43cux435ux441ux44fux446ux435ux432-ux441-ux43cux43eux43cux435ux43dux442ux430-ux43fux435ux440ux432ux43eux439-ux43fux43eux43aux443ux43fux43aux438}{%
+\subsubsection{6. Сколько раз в среднем один человек покупает билеты в
+течение 6 месяцев с момента первой
+покупки?}\label{ux441ux43aux43eux43bux44cux43aux43e-ux440ux430ux437-ux432-ux441ux440ux435ux434ux43dux435ux43c-ux43eux434ux438ux43d-ux447ux435ux43bux43eux432ux435ux43a-ux43fux43eux43aux443ux43fux430ux435ux442-ux431ux438ux43bux435ux442ux44b-ux432-ux442ux435ux447ux435ux43dux438ux435-6-ux43cux435ux441ux44fux446ux435ux432-ux441-ux43cux43eux43cux435ux43dux442ux430-ux43fux435ux440ux432ux43eux439-ux43fux43eux43aux443ux43fux43aux438}}
+
+\hypertarget{ux43aux430ux43aux43eux439-ux441ux440ux435ux434ux43dux438ux439-ux447ux435ux43a-ux441ux435ux440ux432ux438ux441ux430}{%
+\subsubsection{7. Какой средний чек
+сервиса?}\label{ux43aux430ux43aux43eux439-ux441ux440ux435ux434ux43dux438ux439-ux447ux435ux43a-ux441ux435ux440ux432ux438ux441ux430}}
+
+\hypertarget{ux441ux43aux43eux43bux44cux43aux43e-ux434ux435ux43dux435ux433-ux43eux431ux44bux447ux43dux43e-ux43fux440ux438ux43dux43eux441ux438ux442-ux432-ux441ux440ux435ux434ux43dux435ux43c-ux43eux434ux438ux43d-ux43fux43eux43aux443ux43fux430ux442ux435ux43bux44c-ux43aux430ux436ux434ux44bux439-ux43cux435ux441ux44fux446-ux432-ux442ux435ux447ux435ux43dux438ux435-ux43fux435ux440ux432ux44bux445-ux43fux43eux43bux443ux433ux43eux434ux430-ux441-ux43cux43eux43cux435ux43dux442ux430-ux43fux435ux440ux432ux43eux439-ux43fux43eux43aux443ux43fux43aux438}{%
+\subsubsection{8. Сколько денег обычно приносит в среднем один
+покупатель каждый месяц в течение первых полугода с момента первой
+покупки?}\label{ux441ux43aux43eux43bux44cux43aux43e-ux434ux435ux43dux435ux433-ux43eux431ux44bux447ux43dux43e-ux43fux440ux438ux43dux43eux441ux438ux442-ux432-ux441ux440ux435ux434ux43dux435ux43c-ux43eux434ux438ux43d-ux43fux43eux43aux443ux43fux430ux442ux435ux43bux44c-ux43aux430ux436ux434ux44bux439-ux43cux435ux441ux44fux446-ux432-ux442ux435ux447ux435ux43dux438ux435-ux43fux435ux440ux432ux44bux445-ux43fux43eux43bux443ux433ux43eux434ux430-ux441-ux43cux43eux43cux435ux43dux442ux430-ux43fux435ux440ux432ux43eux439-ux43fux43eux43aux443ux43fux43aux438}}
+
+\hypertarget{ux441ux43aux43eux43bux44cux43aux43e-ux434ux435ux43dux435ux433-ux43fux43eux442ux440ux430ux442ux438ux43bux438-ux43cux430ux440ux43aux435ux442ux43eux43bux43eux433ux438-ux432ux441ux435ux433ux43e-ux438-ux43dux430-ux43aux430ux436ux434ux44bux439-ux440ux435ux43aux43bux430ux43cux43dux44bux439-ux43aux430ux43dux430ux43b}{%
+\subsubsection{9. Сколько денег потратили маркетологи всего и на каждый
+рекламный
+канал?}\label{ux441ux43aux43eux43bux44cux43aux43e-ux434ux435ux43dux435ux433-ux43fux43eux442ux440ux430ux442ux438ux43bux438-ux43cux430ux440ux43aux435ux442ux43eux43bux43eux433ux438-ux432ux441ux435ux433ux43e-ux438-ux43dux430-ux43aux430ux436ux434ux44bux439-ux440ux435ux43aux43bux430ux43cux43dux44bux439-ux43aux430ux43dux430ux43b}}
+
+\hypertarget{ux43aux430ux43a-ux43eux43aux443ux43fux430ux44eux442ux441ux44f-ux440ux430ux441ux445ux43eux434ux44b-ux43dux430-ux43aux430ux436ux434ux44bux439-ux440ux435ux43aux43bux430ux43cux43dux44bux439-ux43aux430ux43dux430ux43b}{%
+\subsubsection{10. Как окупаются расходы на каждый рекламный
+канал?}\label{ux43aux430ux43a-ux43eux43aux443ux43fux430ux44eux442ux441ux44f-ux440ux430ux441ux445ux43eux434ux44b-ux43dux430-ux43aux430ux436ux434ux44bux439-ux440ux435ux43aux43bux430ux43cux43dux44bux439-ux43aux430ux43dux430ux43b}}
+
+\hypertarget{ux43aux430ux43aux438ux435-ux440ux435ux43aux43bux430ux43cux43dux44bux435-ux43aux430ux43dux430ux43bux44b-ux441ux43bux435ux434ux443ux435ux442-ux432ux44bux43aux43bux44eux447ux438ux442ux44c-ux430-ux432-ux43aux430ux43aux438ux435-ux43dux443ux436ux43dux43e-ux438ux43dux432ux435ux441ux442ux438ux440ux43eux432ux430ux442ux44c-ux431ux43eux43bux44cux448ux435-ux43eux442ux432ux435ux442-ux430ux440ux433ux443ux43cux435ux43dux442ux438ux440ux443ux439ux442ux435.}{%
+\subsubsection{11. Какие рекламные каналы следует выключить, а в какие
+нужно инвестировать больше? Ответ
+аргументируйте.}\label{ux43aux430ux43aux438ux435-ux440ux435ux43aux43bux430ux43cux43dux44bux435-ux43aux430ux43dux430ux43bux44b-ux441ux43bux435ux434ux443ux435ux442-ux432ux44bux43aux43bux44eux447ux438ux442ux44c-ux430-ux432-ux43aux430ux43aux438ux435-ux43dux443ux436ux43dux43e-ux438ux43dux432ux435ux441ux442ux438ux440ux43eux432ux430ux442ux44c-ux431ux43eux43bux44cux448ux435-ux43eux442ux432ux435ux442-ux430ux440ux433ux443ux43cux435ux43dux442ux438ux440ux443ux439ux442ux435.}}
+
+\end{document}
